@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServerSettingsViewModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IpAddress>192.168.31.196</IpAddress>
+  <Port>500</Port>
+  <Password>DensoServerFIOT</Password>
+</ServerSettingsViewModel>

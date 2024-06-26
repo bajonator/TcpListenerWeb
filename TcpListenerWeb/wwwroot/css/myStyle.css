@@ -1,0 +1,7 @@
+﻿.my-border {
+    padding: 10px;
+    border: 0.1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    background-color: rgba(10,10,10,0.1);
+    padding: 15px;
+}
