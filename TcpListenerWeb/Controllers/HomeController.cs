@@ -10,10 +10,10 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TcpListenerWeb.Core;
 using TcpListenerWeb.Core.ViewModels;
 using TcpListenerWeb.Extensions;
 using TcpListenerWeb.Helpers;
-using TcpListenerWeb.Hubs;
 
 namespace TcpListenerWeb.Controllers
 {
@@ -29,7 +29,6 @@ namespace TcpListenerWeb.Controllers
         {
             _hubContext = hubContext;
         }
-        [HttpGet]
         public IActionResult Index()
         {
             var model = _fileHelperSettings.DeserializeFromFile();
@@ -46,7 +45,7 @@ namespace TcpListenerWeb.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("home/start")]
         public IActionResult Start(ServerSettingsViewModel model)
         {
             if (!isListening)
@@ -59,7 +58,7 @@ namespace TcpListenerWeb.Controllers
             return Json(new { status = "already running" });
         }
 
-        [HttpPost]
+        [HttpPost("home/stop")]
         public IActionResult Stop()
         {
             if (isListening && listener != null)
@@ -73,13 +72,22 @@ namespace TcpListenerWeb.Controllers
 
         private async Task StartListening(string ipAddress, int port, string password)
         {
-            listener = new TcpListener(IPAddress.Parse(ipAddress), port);
-            listener.Start();
-
-            while (isListening)
+            try
             {
-                var client = await listener.AcceptTcpClientAsync();
-                _ = Task.Run(() => HandleClient(client, password));
+                listener = new TcpListener(IPAddress.Parse(ipAddress), port);
+                listener.Start();
+                Console.WriteLine($"Listening on {ipAddress}:{port}"); // Dodaj log
+
+                while (isListening)
+                {
+                    var client = await listener.AcceptTcpClientAsync();
+                    Console.WriteLine("Client connected"); // Dodaj log
+                    _ = Task.Run(() => HandleClient(client, password));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in StartListening: {ex.Message}"); // Dodaj log błędu
             }
         }
 
@@ -122,6 +130,10 @@ namespace TcpListenerWeb.Controllers
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in HandleClient: {ex.Message}"); // Dodaj log błędu
+            }
             finally
             {
                 client.Close();
@@ -131,11 +143,12 @@ namespace TcpListenerWeb.Controllers
         [HttpPost]
         public IActionResult LoadDataFromFile()
         {
+            string filePath = "receivedData.txt";
             try
             {
-                if (System.IO.File.Exists("receivedData.txt"))
+                if (System.IO.File.Exists(filePath))
                 {
-                    var model = System.IO.File.ReadAllLines("receivedData.txt");
+                    var model = System.IO.File.ReadAllLines(filePath);
 
                     return Json(new { status = "success", model });
                 }

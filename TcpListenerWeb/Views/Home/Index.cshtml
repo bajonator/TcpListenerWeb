@@ -48,7 +48,7 @@
 <script>
     function startServer() {
         $.ajax({
-            url: '/Home/Start',
+            url: '/TcpListener/Home/Start',
             type: 'POST',
             data: {
                 IpAddress: $("#IpAddress").val(),
@@ -71,7 +71,7 @@
 
     function stopServer() {
         $.ajax({
-            url: '/Home/Stop',
+            url: 'TcpListener/Home/Stop',
             type: 'POST',
             success: function (response) {
                 if (response.status === "stopped") {
@@ -89,7 +89,7 @@
 
     function LoadData() {
         $.ajax({
-            url: '/Home/LoadDataFromFile',
+            url: 'TcpListener/Home/LoadDataFromFile',
             type: 'POST',
             success: function (response) {
                 if (response.status === "success") {
@@ -117,7 +117,7 @@
         });
     }
 
-    const connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+    const connection = new signalR.HubConnectionBuilder().withUrl("/TcpListener/notificationHub").build();
 
     connection.on("ReceiveMessage", function (message) {
         const li = document.createElement("li");

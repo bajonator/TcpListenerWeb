@@ -1,24 +1,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TcpListenerWeb.Hubs;
-//using TcpListenerWeb.Services;
+using TcpListenerWeb.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-//builder.Services.AddHostedService<TcpServerService>();
 builder.Services.AddSignalR();
 
-var app = builder.Build();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(11000); 
+});
 
-// Configure the HTTP request pipeline.
+var app = builder.Build();
+app.UsePathBase("/TcpListener");
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

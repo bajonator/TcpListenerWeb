@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace TcpListenerWeb.Hubs
+namespace TcpListenerWeb.Core
 {
     public class NotificationHub : Hub
     {
